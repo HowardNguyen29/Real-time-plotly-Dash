@@ -58,13 +58,6 @@ app.layout = html.Div(children=[
     html.Br(),
 
     html.P("Range Values:"),
-    # dcc.RangeSlider(
-    #     id='range-slider-id', 
-    #     min=0,
-    #     max=10,
-    #     step=1,
-    #     value=[0, 10]
-    #     ),
     
     html.Div([
         dcc.RangeSlider(
@@ -91,6 +84,8 @@ app.layout = html.Div(children=[
     )
 ])
 
+
+# Slider
 @app.callback(
         Output("range-slider-container", "children"),
         Input("dropdown-bar", "value")
@@ -105,6 +100,8 @@ def update_rangeslider(num_bars):
                             id = "range-slider-id"
                             )
 
+
+# Candlesticks chart
 @app.callback(
     Output(component_id='candle-stick-id', component_property='figure'),
     [Input(component_id='dropdown-coin', component_property='value'),
@@ -136,9 +133,6 @@ def update_candle_stick(coin_pair, num_time, num_bar, range_values, n_intervals)
         'volume': 'sum'
     }).reset_index()
 
-    data["RSI"] = ta.rsi(data["close"])
-
-    # data = data.iloc[14:]
     data = data.iloc[range_values[0]:range_values[1]]
     
     candles = go.Figure(data=[go.Candlestick(
@@ -153,7 +147,7 @@ def update_candle_stick(coin_pair, num_time, num_bar, range_values, n_intervals)
     
     # Adjust layout for better spacing
     candles.update_layout(
-        xaxis_rangeslider_visible=False,   # Remove range slider
+        xaxis_rangeslider_visible=False,
         template="plotly_dark"
     )
 
@@ -165,6 +159,7 @@ def update_candle_stick(coin_pair, num_time, num_bar, range_values, n_intervals)
     return candles
 
 
+# RSI line chart
 @app.callback(
     Output(component_id='rsi-indicator-id', component_property='figure'),
     [Input(component_id='dropdown-coin', component_property='value'),
